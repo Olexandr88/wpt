@@ -1,5 +1,7 @@
 // META: title=Detect english
 // META: global=window
+// META: timeout=long
+// META: script=/resources/testdriver.js
 // META: script=../resources/util.js
 // META: script=../resources/locale-util.js
 

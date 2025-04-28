@@ -1,16 +1,30 @@
 // META: title=Detect english
 // META: global=window
+// META: timeout=long
+// META: script=/resources/testdriver.js
 // META: script=../resources/util.js
 // META: script=../resources/locale-util.js
 
 'use strict';
 
 promise_test(async t => {
-  // Language detection is available after call to `create()`.
-  await LanguageDetector.create();
+  // Creating the language detector without user activation rejects with
+  // NotAllowedError.
+  const createPromise = LanguageDetector.create();
+  await promise_rejects_dom(t, 'NotAllowedError', createPromise);
+
+  // Creating the translator with user activation succeeds.
+  await test_driver.bless('Create LanguageDetector', () => {
+    return LanguageDetector.create();
+  });
+
+  // Creating it should have switched it to available.
   const availability = await LanguageDetector.availability();
   assert_equals(availability, 'available');
-}, 'Simple LanguageDetector.availability() call');
+
+  // Now that it is available, we should no longer need user activation.
+  await LanguageDetector.create();
+}, 'LanguageDetector.create() requires user activation when availability is "downloadable.');
 
 promise_test(async t => {
   const detector = await LanguageDetector.create();
